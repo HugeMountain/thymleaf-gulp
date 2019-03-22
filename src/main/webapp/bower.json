@@ -1,0 +1,17 @@
+{
+  "name": "my-html",
+  "homepage": "https://github.com/HugeMountain/thymleaf-gulp",
+  "authors": [
+    "hugeMountain <1303981267@qq.com>"
+  ],
+  "description": "",
+  "main": "dist/index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
