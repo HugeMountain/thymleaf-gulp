@@ -1,0 +1,156 @@
+<!doctype html>
+<html class="no-js" lang=""
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE"
+    ></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css content/css/vendor.css -->
+    <!-- bower:css -->
+
+    <!-- endinject -->
+
+    <!-- endbuild -->
+    <!-- build:css content/css/main.css -->
+
+    <!-- endbuild -->
+</head>
+<body>
+<!--[if lt IE 9]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
+<div layout:fragment="header">
+
+</div>
+
+<div layout:fragment="content">
+
+</div>
+
+<div layout:fragment="footer">
+
+</div>
+
+<!--modal-->
+<div class="modal fade" tabindex="-1" role="dialog" id="changePassword">
+    <div class="modal-dialog width-42" role="document">
+        <div class="modal-content">
+            <div class="modal-header pb0" style="border-bottom: 0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="t-bold text-center mts" style="font-size: 20px">修改密码</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="changePasswordForm">
+                    <div class="form-group ma0 height-5">
+                        <span class="col-xs-3 control-label pl0">原密码：</span>
+                        <div class="col-xs-9">
+                            <input type="password" class="form-control" name="oldPassword" id="oldPassword">
+                        </div>
+                    </div>
+                    <div class="form-group ma0 height-5">
+                        <span class="col-xs-3 control-label pl0">新密码：</span>
+                        <div class="col-xs-9">
+                            <input type="password" class="form-control" name="newPassword" id="password">
+                        </div>
+                    </div>
+                    <div class="form-group ma0 height-5">
+                        <span class="col-xs-3 control-label pl0">确认密码：</span>
+                        <div class="col-xs-9">
+                            <input type="password" class="form-control" name="confirmPassword" id="confirmPassword">
+                        </div>
+                    </div>
+                    <div class="mas">
+                        <button class="btn btn-primary btn-block confirm" type="button" data-dismiss="modal">确认</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="changePasswordSuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="/content/images/success.png" alt="" class="center-block mtm">
+                <h4 class="t-bold mtm">保存成功</h4>
+                <p class="color-gray-light3">自动跳转...<span class="time">60</span>s</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="changePasswordFailed">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="/content/images/failed.png" alt="" class="center-block mtm">
+                <h4 class="t-bold mtm">保存失败</h4>
+                <p class="color-gray-light3">自动跳转...<span class="time">60</span>s</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- build:js app/vendor.js -->
+<!-- bower:js -->
+<script src="/bower_components/jquery/dist/jquery.js"></script>
+<script src="/bower_components/jquery-validation/dist/jquery.validate.js"></script>
+<script src="/bower_components/jquery-validation/src/localization/messages_zh.js"></script>
+<script src="/bower_components/json3/lib/json3.js"></script>
+<script src="/bower_components/moment/min/moment-with-locales.js"></script>
+<script src="/bower_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
+<script src="/bower_components/fex-webuploader/dist/webuploader.js"></script>
+<script src="/bower_components/iCheck/icheck.js"></script>
+<script src="/bower_components/summernote/dist/summernote.js"></script>
+<script src="/bower_components/summernote/lang/summernote-zh-CN.js"></script>
+<script src="/bower_components/circliful/js/jquery.circliful.min.js"></script>
+<script src="/bower_components/jquery-knob/js/jquery.knob.js"></script>
+<script src="/bower_components/toastr/toastr.js"></script>
+<script src="/bower_components/chosen/chosen.jquery.js"></script>
+<script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap.js"></script>
+<script src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+<!-- endinject -->
+<!-- endbuild -->
+
+<!-- build:js app/app.js  -->
+<!-- inject:js -->
+<script src="/app/jquery-ui.min.js"></script>
+<script src="/app/jquery.cxselect.js"></script>
+<script src="/app/bootstrap-suggest.min.js"></script>
+<script src="/app/bootstrap-paginator.js"></script>
+<script src="/app/fileinput/fileinput.js"></script>
+<script src="/app/fileinput/zh.js"></script>
+<script src="/app/main.js"></script>
+<script src="/app/register/register.js"></script>
+<script src="/app/register/forgotPassword.js"></script>
+<script src="/app/markets/market.js"></script>
+<script src="/app/managers/show.js"></script>
+<script src="/app/managers/list.js"></script>
+<script src="/app/dashboard/information/upload.js"></script>
+<script src="/app/dashboard/information/manager.js"></script>
+<script src="/app/dashboard/information/changePassword.js"></script>
+<script src="/app/dashboard/product/products/new.js"></script>
+<script src="/app/dashboard/product/products/list.js"></script>
+<script src="/app/dashboard/product/accounts/new.js"></script>
+<script src="/app/dashboard/product/accounts/list.js"></script>
+<script src="/app/dashboard/admin/member/member.js"></script>
+<script src="/app/dashboard/admin/department/department.js"></script>
+<script src="/app/dashboard/investment/investment.js"></script>
+<script src="/app/dashboard/attention/attention.js"></script>
+<script src="/app/bootstrap-suggest.min.js"></script>
+<script src="/app/bootstrap-paginator.js"></script>
+<script src="/app/advisors/show.js"></script>
+<script src="/app/advisors/list.js"></script>
+<!-- endinject -->
+<!-- endbuild -->
+</body>
+</html>
