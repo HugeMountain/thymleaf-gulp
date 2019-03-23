@@ -84,7 +84,7 @@ spring:
         favicon:
             enabled: false
     thymeleaf:
-        mode: HTML
+        mode: XHTML
 
 server:
     servlet:

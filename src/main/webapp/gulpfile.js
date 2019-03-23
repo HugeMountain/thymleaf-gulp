@@ -1,166 +1,94 @@
 'use strict';
 
 var gulp = require('gulp');
-var es = require('event-stream');
-var clean = require('gulp-clean');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
-var less = require('gulp-less');
-var handlebars = require('gulp-handlebars');
-var wrap = require('gulp-wrap');
-var declare = require('gulp-declare');
-var watch = require('gulp-watch');
-var connect = require('gulp-connect');
-var header = require('gulp-header');
-var order = require('gulp-order');
+var uglify = require('gulp-uglify');  //js压缩
+var concat = require('gulp-concat');  //合并文件
+var minifyCSS = require('gulp-minify-css');  //css压缩
+var sass = require('gulp-sass');  //scss
+var changedInPlace = require('gulp-changed-in-place');//不管修改哪个文件，gulp会简化DEST里的html文件
+var minifyHTML = require('gulp-minify-html');  //简化html
+var browserSync = require('browser-sync').create(); //自动刷新
+var babel = require('gulp-babel'); //支持es6
+// var argv = require('yargs').argv; //支持不同环境
+var sequence = require('gulp-sequence'); //按照顺序执行
+var watch = require('watch');  //监听
+var clean = require('gulp-clean');  //监听
 var jshint = require('gulp-jshint');
+var autoprefixer = require('gulp-autoprefixer');
+var livereload = require('gulp-livereload');
+var imagemin = require('gulp-imagemin');
+var cache = require('gulp-cache');
 var pkg = require('./package.json');
 
 var banner = ['/**',
-  ' * <%= pkg.name %> - <%= pkg.description %>',
-  ' * @version v<%= pkg.version %>',
-  ' * @link <%= pkg.homepage %>',
-  ' * @license <%= pkg.license %>',
-  ' */',
-  ''].join('\n');
+    ' * <%= pkg.name %> - <%= pkg.description %>',
+    ' * @version v<%= pkg.version %>',
+    ' * @link <%= pkg.homepage %>',
+    ' * @license <%= pkg.license %>',
+    ' */',
+    ''].join('\n');
 
+var DIST_PATH = 'dist/';
+var HTML_PATH = '../resources/templates/';
 /**
  * Clean ups ./dist folder
  */
-gulp.task('clean', function() {
-  return gulp
-    .src('./dist', {read: false})
-    .pipe(clean({force: true}))
-    .on('error', log);
+gulp.task('clean', function () {
+    return gulp
+        .src(DIST_PATH, {read: false})
+        .pipe(clean({force: true}))
+        .on('error', log);
 });
 
 /**
  * JShint all *.js files
  */
 gulp.task('lint', function () {
-  return gulp.src('./src/main/javascript/**/*.js')
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'));
+    return gulp.src('app/**/*.js')
+        .pipe(jshint())
+        .pipe(jshint.reporter('jshint-stylish'));
 });
 
 /**
- * Build a distribution
+ * minify js
  */
-gulp.task('dist', ['clean', 'lint'], _dist);
-function _dist() {
-  return es.merge(
-    gulp.src([
-        './node_modules/es5-shim/es5-shim.js',
-        './src/main/javascript/**/*.js',
-        './node_modules/swagger-client/browser/swagger-client.js'
-      ]),
-      gulp
-        .src(['./src/main/template/**/*'])
-        .pipe(handlebars())
-        .pipe(wrap('Handlebars.template(<%= contents %>)'))
-        .pipe(declare({
-          namespace: 'Handlebars.templates',
-          noRedeclare: true, // Avoid duplicate declarations
+gulp.task('minifyjs', function () {
+    gulp.src('app/**/*.js')
+        .pipe(babel({
+            presets: ['es2015']
         }))
-        .on('error', log)
-    )
-    .pipe(order(['scripts.js', 'templates.js']))
-    .pipe(concat('swagger-ui.js'))
-    .pipe(wrap('(function(){<%= contents %>}).call(this);'))
-    .pipe(header(banner, { pkg: pkg }))
-    .pipe(gulp.dest('./dist'))
-    .pipe(uglify())
-    .on('error', log)
-    .pipe(rename({extname: '.min.js'}))
-    .on('error', log)
-    .pipe(gulp.dest('./dist'))
-    .pipe(connect.reload());
-}
-gulp.task('dev-dist', ['lint', 'dev-copy'], _dist);
-
+        .pipe(uglify())
+        .pipe(gulp.dest(DIST_PATH + 'static/js'))
+});
 /**
- * Processes less files into CSS files
+ * minify css
  */
-gulp.task('less', ['clean'], _less);
-function _less() {
-  return gulp
-    .src([
-      './src/main/less/screen.less',
-      './src/main/less/print.less',
-      './src/main/less/reset.less',
-      './src/main/less/style.less'
-    ])
-    .pipe(less())
-    .on('error', function(err){ log(err); this.emit('end');})
-    .pipe(gulp.dest('./src/main/html/css/'))
-    .pipe(connect.reload());
-}
-gulp.task('dev-less', _less);
-
-/**
- * Copy lib and html folders
- */
-gulp.task('copy', ['less'], _copy);
-function _copy() {
-  // copy JavaScript files inside lib folder
-  gulp
-    .src(['./lib/**/*.{js,map}', './node_modules/es5-shim/es5-shim.js'])
-    .pipe(gulp.dest('./dist/lib'))
-    .on('error', log);
-
-  // copy `lang` for translations
-  gulp
-    .src(['./lang/**/*.js'])
-    .pipe(gulp.dest('./dist/lang'))
-    .on('error', log);
-
-  // copy all files inside html folder
-  gulp
-    .src(['./src/main/html/**/*'])
-    .pipe(gulp.dest('./dist'))
-    .on('error', log);
-}
-gulp.task('dev-copy', ['dev-less', 'copy-local-specs'], _copy);
-
-gulp.task('copy-local-specs', function () {
-  // copy the test specs
-  return gulp
-    .src(['./test/specs/**/*'])
-    .pipe(gulp.dest('./dist/specs'))
-    .on('error', log);
+gulp.task('minifycss', function () {
+    gulp.src('static/*.scss')
+        .pipe(sass())
+        .pipe(autoprefixer())
+        .pipe(minifyCSS())
+        .pipe(concat('style.min.css'))
+        .pipe(gulp.dest(DIST_PATH + 'static/css'))
 });
 
-/**
- * Watch for changes and recompile
- */
-gulp.task('watch', ['copy-local-specs'], function() {
-  return watch([
-    './src/**/*.{js,less,handlebars}',
-    './src/main/html/*.html',
-    './test/specs/**/*.{json,yaml}'
-    ],
-    function() {
-      gulp.start('dev-dist');
-    });
+gulp.task('minifyhtml', function(){
+    gulp.src(HTML_PATH)
+        .pipe(changedInPlace({firstPass: true}))
+        .pipe(minifyHTML({collapseWhitespace: true}))
+        .pipe(gulp.dest(DIST_PATH))
+        .pipe(browserSync.stream());
 });
 
-/**
- * Live reload web server of `dist`
- */
-gulp.task('connect', function() {
-  connect.server({
-    root: 'dist',
-    livereload: true
-  });
+//task to optimize images (imagemin)
+gulp.task('images', function(){
+    return gulp.src('static/images/**/*.+(png|jpg|gif|svg)')
+        .pipe(cache(imagemin()))
+        .pipe(gulp.dest(DIST_PATH + 'static/images'))
+
 });
 
-function log(error) {
-  console.error(error.toString && error.toString());
-}
-
-gulp.task('default', ['dist', 'copy']);
-gulp.task('serve', ['connect', 'watch']);
-gulp.task('dev', ['default'], function () {
-  gulp.start('serve');
+gulp.task('fonts', function() {
+    return gulp.src('static/fonts/**/*')
+        .pipe(gulp.dest(DIST_PATH + 'fonts'))
 });

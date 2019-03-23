@@ -223,7 +223,14 @@ dependencies {
     }
     compile "org.springframework.boot:spring-boot-starter-undertow"
     compile "org.springframework.boot:spring-boot-starter-websocket"
+
     compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+    compile "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:${thymleaf_layout_dialect_version}"
+    compile "org.thymeleaf.extras:thymeleaf-extras-springsecurity4:${thymeleaf_spring_data_dialect_version}"
+    compile "org.thymeleaf.extras:thymeleaf-extras-java8time:${thymeleaf_extras_java8time_version}"
+    compile "io.github.jpenren:thymeleaf-spring-data-dialect:${thymeleaf_extras_springsecurity4_version}"
+
+
     compile "org.zalando:problem-spring-web:0.24.0-RC.0"
     compile "org.springframework.boot:spring-boot-starter-cloud-connectors"
     compile "org.springframework.security:spring-security-config"
