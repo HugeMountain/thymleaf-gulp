@@ -36,7 +36,7 @@ var DIST_PATH = 'dist/';
 
 var SRC_PATH = {
     js: 'app/**/*.js',
-    scss: 'static/vender/**/*.scss',
+    scss: 'static/scss/index.scss',
     css: 'static/css/*',
     html: '../resources/templates/',
     image: 'static/images/**/*.+(png|jpg|gif|svg)',
@@ -83,12 +83,6 @@ gulp.task('minifycss', function () {
         .pipe(minifyCSS())
         .pipe(concat('style.min.css'))
         .pipe(gulp.dest(DIST_PATH + 'static/css'));
-});
-
-gulp.task('compileCss', function () {
-    gulp.src(SRC_PATH.scss)
-        .pipe(sass())
-        .pipe(gulp.dest(SRC_PATH.css));
 });
 
 gulp.task('minifyhtml', function(){
@@ -149,10 +143,14 @@ gulp.task('inject', function(done) {
 });
 
 
-gulp.task('watch', gulp.series('browser-sync', 'inject', function(){
+gulp.task('scss', function () {
+    gulp.src('static/scss/index.scss')
+        .pipe(sass())
+        .pipe(gulp.dest(SRC_PATH.css));
+});
 
-    gulp.watch(SRC_PATH.html, browserSync.reload); // HTML
-    gulp.watch(SRC_PATH.js, browserSync.reload); // JS
-    gulp.watch(SRC_PATH.css, browserSync.reload); // CSS
+gulp.task('watch', function(){
 
-}));
+    gulp.watch(SRC_PATH.scss, ['compileCss']); // CSS
+
+});
