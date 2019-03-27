@@ -22,6 +22,7 @@ var livereload = require('gulp-livereload');
 var imagemin = require('gulp-imagemin');
 var cache = require('gulp-cache');
 var runSequence = require('run-sequence');
+var connect = require('gulp-connect');
 var pkg = require('./package.json');
 
 var banner = ['/**',
@@ -35,9 +36,9 @@ var banner = ['/**',
 var DIST_PATH = 'dist/';
 
 var SRC_PATH = {
-    js: 'app/**/*.js',
+    js: 'app/**/*',
     scss: 'static/scss/index.scss',
-    css: 'static/css/*',
+    css: 'static/css/**/*.css',
     html: '../resources/templates/',
     image: 'static/images/**/*.+(png|jpg|gif|svg)',
     fonts: 'static/fonts/**/*'
@@ -123,12 +124,14 @@ gulp.task('build', function(callback) {
 });
 
 
-gulp.task('browser-sync', function() {
-    browserSync.init({
-        server: {
-            baseDir: "./"
-        }
-    })
+/**
+ * Live reload web server of `dist`
+ */
+gulp.task('connect', function() {
+    connect.server({
+        root: 'dist',
+        livereload: true
+    });
 });
 
 gulp.task('inject', function(done) {
@@ -146,7 +149,9 @@ gulp.task('inject', function(done) {
 gulp.task('scss', function () {
     gulp.src('static/scss/index.scss')
         .pipe(sass())
-        .pipe(gulp.dest(SRC_PATH.css));
+        .pipe(minifyCSS())
+        .on('error', function(error){ console.error(error.toString && error.toString());})
+        .pipe(gulp.dest('static/css'));
 });
 
 gulp.task('watch', function(){
