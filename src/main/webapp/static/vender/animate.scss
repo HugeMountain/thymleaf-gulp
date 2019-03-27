@@ -1,0 +1,16 @@
+@keyframes movetop {
+    0% {
+        transform: translate(0, 0);
+    }
+    20% {
+        transform: translate(0, 0);
+    }
+    87.7% {
+        transform: translate(0, -170px);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(0, -170px);
+        opacity: 0;
+    }
+}

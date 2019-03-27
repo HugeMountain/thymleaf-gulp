@@ -1,6 +1,9 @@
 'use strict';
 
 var gulp = require('gulp');
+var bowerFiles = require('main-bower-files');  //插入bower文件
+var inject = require('gulp-inject');   //文件插入
+var es = require('event-stream');   //文件插入
 var uglify = require('gulp-uglify');  //js压缩
 var concat = require('gulp-concat');  //合并文件
 var minifyCSS = require('gulp-minify-css');  //css压缩
@@ -18,6 +21,7 @@ var autoprefixer = require('gulp-autoprefixer');
 var livereload = require('gulp-livereload');
 var imagemin = require('gulp-imagemin');
 var cache = require('gulp-cache');
+var runSequence = require('run-sequence');
 var pkg = require('./package.json');
 
 var banner = ['/**',
@@ -29,7 +33,17 @@ var banner = ['/**',
     ''].join('\n');
 
 var DIST_PATH = 'dist/';
-var HTML_PATH = '../resources/templates/';
+
+var SRC_PATH = {
+    js: 'app/**/*.js',
+    scss: 'static/vender/**/*.scss',
+    css: 'static/css/*',
+    html: '../resources/templates/',
+    image: 'static/images/**/*.+(png|jpg|gif|svg)',
+    fonts: 'static/fonts/**/*'
+};
+
+
 /**
  * Clean ups ./dist folder
  */
@@ -44,7 +58,7 @@ gulp.task('clean', function () {
  * JShint all *.js files
  */
 gulp.task('lint', function () {
-    return gulp.src('app/**/*.js')
+    return gulp.src(SRC_PATH.js)
         .pipe(jshint())
         .pipe(jshint.reporter('jshint-stylish'));
 });
@@ -53,27 +67,32 @@ gulp.task('lint', function () {
  * minify js
  */
 gulp.task('minifyjs', function () {
-    gulp.src('app/**/*.js')
-        .pipe(babel({
-            presets: ['es2015']
-        }))
+    gulp.src(SRC_PATH.js)
+        .pipe(babel())
         .pipe(uglify())
         .pipe(gulp.dest(DIST_PATH + 'static/js'))
 });
+
 /**
  * minify css
  */
 gulp.task('minifycss', function () {
-    gulp.src('static/*.scss')
+    gulp.src(SRC_PATH.css)
         .pipe(sass())
         .pipe(autoprefixer())
         .pipe(minifyCSS())
         .pipe(concat('style.min.css'))
-        .pipe(gulp.dest(DIST_PATH + 'static/css'))
+        .pipe(gulp.dest(DIST_PATH + 'static/css'));
+});
+
+gulp.task('compileCss', function () {
+    gulp.src(SRC_PATH.scss)
+        .pipe(sass())
+        .pipe(gulp.dest(SRC_PATH.css));
 });
 
 gulp.task('minifyhtml', function(){
-    gulp.src(HTML_PATH)
+    gulp.src(SRC_PATH.html)
         .pipe(changedInPlace({firstPass: true}))
         .pipe(minifyHTML({collapseWhitespace: true}))
         .pipe(gulp.dest(DIST_PATH))
@@ -82,13 +101,58 @@ gulp.task('minifyhtml', function(){
 
 //task to optimize images (imagemin)
 gulp.task('images', function(){
-    return gulp.src('static/images/**/*.+(png|jpg|gif|svg)')
+    return gulp.src(SRC_PATH.image)
         .pipe(cache(imagemin()))
         .pipe(gulp.dest(DIST_PATH + 'static/images'))
 
 });
 
 gulp.task('fonts', function() {
-    return gulp.src('static/fonts/**/*')
+    return gulp.src(SRC_PATH.fonts)
         .pipe(gulp.dest(DIST_PATH + 'fonts'))
 });
+
+// gulp.task('default', function (callback) {
+//
+//     runSequence([''],
+//         callback
+//     )
+//
+// });
+
+gulp.task('build', function(callback) {
+    runSequence('clean:dist',
+        ['minifyjs', 'minifycss', 'images', 'fonts', 'minifyhtml'],
+        callback
+    )
+
+});
+
+
+gulp.task('browser-sync', function() {
+    browserSync.init({
+        server: {
+            baseDir: "./"
+        }
+    })
+});
+
+gulp.task('inject', function(done) {
+    gulp.src(SRC_PATH.html + 'layouts/main.html')
+        .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
+        .pipe(inject(es.merge(
+            gulp.src(SRC_PATH.css, {read: false}),
+            gulp.src(SRC_PATH.js, {read: false})
+        )))
+        .pipe(gulp.dest(SRC_PATH.html + 'layouts'));
+    done();
+});
+
+
+gulp.task('watch', gulp.series('browser-sync', 'inject', function(){
+
+    gulp.watch(SRC_PATH.html, browserSync.reload); // HTML
+    gulp.watch(SRC_PATH.js, browserSync.reload); // JS
+    gulp.watch(SRC_PATH.css, browserSync.reload); // CSS
+
+}));

@@ -1,21 +1,26 @@
 {
-  "name": "my-html",
-  "homepage": "https://github.com/HugeMountain/thymleaf-gulp",
-  "authors": [
-    "hugeMountain <1303981267@qq.com>"
-  ],
-  "description": "",
-  "main": "dist/index.html",
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "jquery": "^3.3.1",
-    "bootstrap": "^4.3.1"
-  }
+    "name": "my-html",
+    "homepage": "https://github.com/HugeMountain/thymleaf-gulp",
+    "authors": [
+        "hugeMountain <1303981267@qq.com>"
+    ],
+    "description": "",
+    "main": "dist/index.html",
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "jquery": "^3.3.1",
+        "bootstrap": "^4.3.1"
+    },
+    "overrides": {
+        "bootstrap": {
+            "main": ["dist/js/bootstrap.min.js", "dist/css/bootstrap.min.css"]
+        }
+    }
 }
