@@ -107,14 +107,6 @@ gulp.task('fonts', function() {
         .pipe(gulp.dest(DIST_PATH + 'fonts'))
 });
 
-// gulp.task('default', function (callback) {
-//
-//     runSequence([''],
-//         callback
-//     )
-//
-// });
-
 gulp.task('build', function(callback) {
     runSequence('clean:dist',
         ['minifyjs', 'minifycss', 'images', 'fonts', 'minifyhtml'],
@@ -146,12 +138,13 @@ gulp.task('inject', function(done) {
 });
 
 
-gulp.task('scss', function () {
+gulp.task('scss', function (done) {
     gulp.src('static/scss/index.scss')
         .pipe(sass())
         .pipe(minifyCSS())
         .on('error', function(error){ console.error(error.toString && error.toString());})
         .pipe(gulp.dest('static/css'));
+    done()
 });
 
 gulp.task('watch', function(){
@@ -159,3 +152,5 @@ gulp.task('watch', function(){
     gulp.watch(SRC_PATH.scss, ['compileCss']); // CSS
 
 });
+
+gulp.task('default', gulp.series('scss', 'inject'));

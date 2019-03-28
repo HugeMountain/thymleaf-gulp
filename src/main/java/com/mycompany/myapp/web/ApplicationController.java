@@ -11,6 +11,11 @@ public class ApplicationController {
 
     @RequestMapping("/")
     public String index(@ModelAttribute("currentUser") User user, Model model) {
+        return "redirect:/index";
+    }
+
+    @RequestMapping("/index")
+    public String home(@ModelAttribute("currentUser") User user, Model model) {
         return "home";
     }
 }

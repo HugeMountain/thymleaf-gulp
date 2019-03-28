@@ -9,8 +9,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE"
     ></title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -20,91 +20,106 @@
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
 
     <!-- endinject -->
+    <link rel="stylesheet" href="/bower_components/admin-lte/dist/css/AdminLTE.min.css">
+
 
     <!-- inject:css -->
-    <link rel="stylesheet" href="/static/css/AdminLTE.min.css">
     <link rel="stylesheet" href="/static/css/index.css">
     <!-- endinject -->
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Google Font -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body>
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<body class="sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
 
+    <header class="main-header" layout:fragment="main-header">
+        <!-- Logo -->
+        <a th:href="@{/index}" class="logo">
+            <!-- mini logo for sidebar mini 50x50 pixels -->
+            <span class="logo-mini"><b>A</b>LT</span>
+            <!-- logo for regular state and mobile devices -->
+            <span class="logo-lg"><b>Admin</b>LTE</span>
+        </a>
 
-<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
-    your browser</a> to improve your experience.</p>
-<![endif]-->
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+            <!-- Navbar Right Menu -->
+            <div class="navbar-custom-menu">
+                <img src="static/image/user2-160x160.jpg" class="user-image" width="auto" height="40" alt="User Image">
+                <span class="hidden-xs">Alexander</span>
+            </div>
 
-
-<header class="main-header" layout:fragment="main-header">
-
-</header>
-<!-- Left side column. contains the logo and sidebar -->
-<aside class="main-sidebar" layout:fragment="main-sidebar">
-    <div class="side-header">
-        <div class="pull-left image">
-
-        </div>
-    </div>
-    <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
-        <!-- sidebar menu: : style can be found in sidebar.less -->
-        <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">MAIN NAVIGATION</li>
-            <li class="active treeview menu-open">
-                <a href="#">
-                    <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-                    <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li><a th:href="@{/flame}"><i class="fa fa-circle-o"></i>Flame</a></li>
-                    <li class="active"><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-                </ul>
-            </li>
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa fa-files-o"></i>
-                    <span>Layout Options</span>
-                    <span class="pull-right-container">
+        </nav>
+    </header>
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar" layout:fragment="main-sidebar">
+        <section class="sidebar">
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">MAIN NAVIGATION</li>
+                <li class="active treeview menu-open">
+                    <a href="#">
+                        <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                        <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li th:class="${#strings.contains(#httpServletRequest.requestURI,'/index')}? 'active' : ''"><a th:href="@{/index}"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
+                        <li th:class="${#strings.contains(#httpServletRequest.requestURI,'/flame')}? 'active' : ''"><a th:href="@{/flame}"><i class="fa fa-circle-o"></i>Flame</a></li>
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-files-o"></i>
+                        <span>Layout Options</span>
+                        <span class="pull-right-container">
               <span class="label label-primary pull-right">4</span>
             </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li><a href="pages/layout/top-nav.html"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
-                    <li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> Boxed</a></li>
-                    <li><a href="pages/layout/fixed.html"><i class="fa fa-circle-o"></i> Fixed</a></li>
-                    <li><a href="pages/layout/collapsed-sidebar.html"><i class="fa fa-circle-o"></i> Collapsed
-                        Sidebar</a></li>
-                </ul>
-            </li>
-            <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
-            <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
-            <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
-        </ul>
-    </section>
-    <!-- /.sidebar -->
-</aside>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
+                        <li><a href="#"><i class="fa fa-circle-o"></i> Boxed</a></li>
+                    </ul>
+                </li>
+                <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
+            </ul>
+        </section>
+    </aside>
 
-<div class="content-wrapper">
-    <section class="content-header" layout:fragment="content-header">
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Dashboard</li>
-        </ol>
-    </section>
-    <section class="content" layout:fragment="content">
+    <div class="content-wrapper">
+        <section class="content-header" layout:fragment="content-header">
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+        </section>
+        <section class="content" layout:fragment="content">
 
-    </section>
+        </section>
+    </div>
+
+    <footer class="main-footer" layout:fragment="main-footer">
+
+    </footer>
+
 </div>
 
-<footer class="main-footer" layout:fragment="main-footer">
 
-</footer>
+
 
 <!--modal-->
 
@@ -116,9 +131,10 @@
 <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
 <!-- endinject -->
+<script src="/bower_components/admin-lte/dist/js/adminlte.js"></script>
 
 <!-- inject:js -->
-<script src="/app/adminlte.min.js"></script>
+<script src="/app/sidebar.js"></script>
 <!-- endinject -->
 </body>
 </html>
