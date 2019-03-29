@@ -126,9 +126,14 @@ gulp.task('connect', function() {
     });
 });
 
+gulp.task('copyBower', function() {
+   return  gulp.src(bowerFiles())
+       .pipe(gulp.dest('static/plugin'));
+});
+
 gulp.task('inject', function(done) {
     gulp.src(SRC_PATH.html + 'layouts/main.html')
-        .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
+        .pipe(inject(gulp.src('static/plugin/*', {read: false}), {name: 'bower'}))
         .pipe(inject(es.merge(
             gulp.src(SRC_PATH.css, {read: false}),
             gulp.src(SRC_PATH.js, {read: false})
@@ -153,4 +158,4 @@ gulp.task('watch', function(){
 
 });
 
-gulp.task('default', gulp.series('scss', 'inject'));
+gulp.task('default', gulp.series('copyBower', 'scss', 'inject'));
