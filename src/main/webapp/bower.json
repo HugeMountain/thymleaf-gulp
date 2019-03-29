@@ -34,7 +34,8 @@
         "admin-lte": {
             "main": [
                 "dist/js/adminlte.min.js",
-                "dist/css/AdminLTE.min.css"
+                "dist/css/AdminLTE.min.css",
+                "dist/css/skins/_all-skins.min.css"
             ]
         }
     }
