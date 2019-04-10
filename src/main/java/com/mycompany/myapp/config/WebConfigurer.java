@@ -99,14 +99,16 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
     }
 
     private void setLocationForStaticAssets(WebServerFactory server) {
-        if (server instanceof ConfigurableServletWebServerFactory) {
-            ConfigurableServletWebServerFactory servletWebServer = (ConfigurableServletWebServerFactory) server;
-            File root;
-            String prefixPath = resolvePathPrefix();
+        ConfigurableServletWebServerFactory servletWebServer = (ConfigurableServletWebServerFactory) server;
+        File root;
+        String prefixPath = resolvePathPrefix();
+        if (env.acceptsProfiles(Constants.SPRING_PROFILE_PRODUCTION)) {
             root = new File(prefixPath + "build/www/");
-            if (root.exists() && root.isDirectory()) {
-                servletWebServer.setDocumentRoot(root);
-            }
+        } else {
+            root = new File(prefixPath + "src/main/webapp/");
+        }
+        if (root.exists() && root.isDirectory()) {
+            servletWebServer.setDocumentRoot(root);
         }
     }
 

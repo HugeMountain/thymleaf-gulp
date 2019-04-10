@@ -28,20 +28,6 @@ bootRun {
     args = []
 }
 
-task webpackBuildDev(type: NpmTask) {
-    inputs.files(fileTree('src/main/webapp/'))
-
-    def webpackDevFiles = fileTree('webpack//')
-    webpackDevFiles.exclude('webpack.prod.js')
-    inputs.files(webpackDevFiles)
-
-    outputs.files(fileTree("build/www/"))
-
-    dependsOn npmInstall
-
-    args = ["run", "webpack:build"]
-}
-
 task copyIntoStatic (type: Copy) {
     from 'build/www/'
     into 'build/resources/main/static'
@@ -58,6 +44,5 @@ processResources {
     }
 }
 
-processResources.dependsOn webpackBuildDev
 copyIntoStatic.dependsOn processResources
 bootJar.dependsOn copyIntoStatic

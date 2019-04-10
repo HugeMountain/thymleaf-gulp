@@ -35,9 +35,10 @@ assert System.properties['java.specification.version'] == '1.8'
 
 apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'war'
+//apply plugin: 'war'
 apply plugin: 'propdeps'
 apply plugin: 'com.moowork.node'
+apply plugin: 'com.moowork.gulp'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
 
@@ -61,14 +62,23 @@ version = '0.0.1-SNAPSHOT'
 
 description = ''
 
-bootWar {
+bootJar {
     mainClassName = 'com.mycompany.myapp.ThymleafGulpApp'
 }
 
-war {
-    webAppDirName = 'build/www/'
-    enabled = true
-    extension = 'war.original'
+//war {
+//    webAppDirName = 'build/www/'
+//    enabled = true
+//    extension = 'war.original'
+//}
+
+jar {
+    baseName = 'thymleaf-gulp'
+    version = '0.0.1'
+    manifest {
+        attributes "Manifest-Version": 1.0,
+            'Main-Class': 'com.mycompany.myapp.ThymleafGulpApp'
+    }
 }
 
 springBoot {
@@ -226,9 +236,9 @@ dependencies {
 
     compile "org.springframework.boot:spring-boot-starter-thymeleaf"
     compile "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:${thymleaf_layout_dialect_version}"
-    compile "org.thymeleaf.extras:thymeleaf-extras-springsecurity4:${thymeleaf_spring_data_dialect_version}"
+    compile "org.thymeleaf.extras:thymeleaf-extras-springsecurity4:${thymeleaf_extras_springsecurity4_version}"
     compile "org.thymeleaf.extras:thymeleaf-extras-java8time:${thymeleaf_extras_java8time_version}"
-    compile "io.github.jpenren:thymeleaf-spring-data-dialect:${thymeleaf_extras_springsecurity4_version}"
+    compile "io.github.jpenren:thymeleaf-spring-data-dialect:${thymeleaf_spring_data_dialect_version}"
 
 
     compile "org.zalando:problem-spring-web:0.24.0-RC.0"
@@ -273,7 +283,7 @@ wrapper {
     gradleVersion = '4.10.2'
 }
 
-task stage(dependsOn: 'bootWar') {
+task stage(dependsOn: 'bootJar') {
 }
 
 if (project.hasProperty('nodeInstall')) {
